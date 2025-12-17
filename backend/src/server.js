@@ -5,7 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.routes.js";
 import ticketRouter from "./routes/ticket.routes.js"
-// import commentRouter from "./routes/comment.routes.js"
+import commentRouter from "./routes/comment.routes.js"
 
 const app = express(); 
 
@@ -23,7 +23,7 @@ app.get("/", (_req, res) => {
 //router handler
 
 app.use("/api/v1/users", userRoutes);
-// app.use("/api/v1/comment", commentRouter);
+app.use("/api/v1/comment", commentRouter);
 app.use("/api/v1/ticket", ticketRouter);
 
 app.listen(PORT, () => {
