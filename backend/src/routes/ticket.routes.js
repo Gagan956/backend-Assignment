@@ -5,7 +5,7 @@ const router = Router();
 
 router.use(authenticate)
 router.post('/' ,authorize('user') ,createTicket)
-router.get('my-tickets' , authorize('user'), getUserTicket )
+router.get('/my-tickets' , authorize('user'), getUserTicket )
 router.get('/assigned', authorize('agent'), getTicketByAgent)
 router.patch('/:ticketId/status', authorize('agent','admin'), updateTicket)
 router.get('/', authorize('admin'), getAllTicket)

@@ -7,24 +7,31 @@ import 'dotenv/config'
 const generatedToken  = (id) => {
   return jwt.sign({id} , process.env.JWT_SECRET)
 }
-export const Register = async () => {
+export const Register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    if (!name || !email || !password || !role) {
-      return res.status(404).json({
+  
+    if (!name || !email || !password) {
+      return res.status(400).json({ 
         success: false,
         message: "Please provide all required fields",
       });
     }
-    const ExistingUser = await User.findOne({ email });
-    if (!ExistingUser) {
-      return res.status(404).json({
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) { 
+      return res.status(409).json({ 
         success: false,
         message: "User already exists",
       });
     }
+    
+    // Hash password
     const passwordhash = await bcrypt.hash(password, 10);
+    
+    // Create and save user
     const user = new User({
       name,
       email,
@@ -32,18 +39,25 @@ export const Register = async () => {
       role: role || "user",
     });
 
-const token  = generatedToken(user._id)
+    await user.save();
+
+    // Generate JWT token
+    const token = generatedToken(user._id);
+    
+    // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === 'production', 
       sameSite: "strict",
-      maxage: 7 *24 * 60 * 60 * 1000, // 7 day
+      maxAge: 7 * 24 * 60 * 60 * 1000, 
     });
-     res.status(201).json({
+    
+    // Return response
+    return res.status(201).json({ // Added return statement
       success: true,
-      meassge: "user create successfully",
+      message: "User created successfully", // Fixed spelling
       data: {
-        id: user_id,
+        id: user._id, // Fixed: user._id (not user_id)
         name: user.name,
         email: user.email,
         role: user.role,
@@ -51,7 +65,7 @@ const token  = generatedToken(user._id)
     });
   } catch (error) {
     console.log(error);
-     res.status(500).json({
+    return res.status(500).json({ // Added return statement
       success: false,
       message: "Internal Server Error",
     });
@@ -60,7 +74,7 @@ const token  = generatedToken(user._id)
 
 //login controller
 
-export const Login = async () => {
+export const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -73,10 +87,10 @@ export const Login = async () => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({
-        success: true,
+        success: false,
         message: "invalid email or password",
-      });
-    }
+      })
+    };
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -91,14 +105,14 @@ export const Login = async () => {
       httpOnly: true,
       secure: false,
       sameSite: "strict",
-      maxage: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
     return res.status(201).json({
       success: true,
       message: "user login successfully",
       data: {
-        id: user_id,
+        id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -123,6 +137,7 @@ export const Logout = async (req, res) => {
     });
     return res.status(200).json({
       success: true,
+      message: "user logout successfully",
     });
   } catch (error) {
     console.log(error);
