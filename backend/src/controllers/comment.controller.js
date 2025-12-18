@@ -13,7 +13,7 @@ export const addComment = async (req, res) => {
         message: "Comment text is required",
       });
     }
-    const ticket = await Ticket.findById(ticketId);
+    const ticket = await Ticket.findOne({ ticket_id: ticketId});
 
     if (!ticket) {
       return res.status(404).json({
@@ -63,7 +63,7 @@ export const addComment = async (req, res) => {
 export const getTicketComment = async (req, res) => {
   try {
     const { ticketId } = req.params;
-    const ticket = await Ticket.findById(ticketId);
+    const ticket = await Ticket.findOne({ ticket_id: ticketId});
 
     if (!ticket) {
       return res.status(404).json({

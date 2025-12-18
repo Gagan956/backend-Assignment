@@ -4,14 +4,13 @@ import {authenticate , authorize}  from '../middleware/auth.middleware.js'
 const router = Router();
 
 router.use(authenticate)
-router.post('/' ,authorize('user') ,createTicket)
-router.get('/my-tickets' , authorize('user'), getUserTicket )
-router.get('/assigned', authorize('agent'), getTicketByAgent)
-router.patch('/:ticketId/status', authorize('agent','admin'), updateTicket)
-router.get('/', authorize('admin'), getAllTicket)
-
-router.post('/:ticketId/assign', authorize('admin'), assignTicket)
-router.get('/:ticketId', authorize('admin'), getTicket)
+router.post('/' ,authorize('user') ,createTicket) //1
+router.get('/my-tickets' , authorize('user'), getUserTicket ) //7
+router.get('/assigned', authorize('agent'), getTicketByAgent) //4
+router.patch('/:ticketId/status', authorize('agent','admin'), updateTicket) //5
+router.get('/', authorize('admin'), getAllTicket) //2
+router.post('/:ticketId/assign', authorize('admin'), assignTicket) //3 
+router.get('/:ticketId', authorize('admin'), getTicket) //6
 
 
 

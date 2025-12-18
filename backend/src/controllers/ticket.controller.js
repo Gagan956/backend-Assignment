@@ -76,7 +76,7 @@ export const assignTicket = async (req, res) => {
     }
     
     // const ticket  = await Ticket.findOne({ticket_id : ticketId})  not mongoDB _id
-    const ticket = await Ticket.findById(ticketId);
+    const ticket = await Ticket.findOne({ ticket_id: ticketId});
     if (!ticket) {
       return res.status(404).json({
         success: false,
@@ -120,7 +120,7 @@ export const updateTicket = async (req, res) => {
       });
     }
   
-    const ticket = await Ticket.findById(ticketId); //mongoDB _id
+    const ticket = await Ticket.findOne({ ticket_id: ticketId}); //mongoDB _id
     if (!ticket) {
       return res.status(404).json({
         success: false,
@@ -228,7 +228,7 @@ export const getTicket = async (req, res) => {
   try {
     const { ticketId } = req.params;
 
-    const ticket = await Ticket.findById(ticketId) //mongoDB _id
+    const ticket = await Ticket.findOne({ ticket_id: ticketId}) //mongoDB _id
       .populate("created_by", "name email")
       .populate("assigned_to", "name email");
 
