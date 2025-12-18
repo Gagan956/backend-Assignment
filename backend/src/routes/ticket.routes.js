@@ -11,7 +11,7 @@ router.patch('/:ticketId/status', authorize('agent','admin'), updateTicket)
 router.get('/', authorize('admin'), getAllTicket)
 
 router.post('/:ticketId/assign', authorize('admin'), assignTicket)
-router.get('/:ticketId', authorize('user'), getTicket)
+router.get('/:ticketId', authorize('admin'), getTicket)
 
 
 

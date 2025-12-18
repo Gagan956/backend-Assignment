@@ -2,14 +2,10 @@ import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema(
   {
-    comment_id: {
-      type: String,
-      required: true,
-    },
-
     ticket_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Ticket",
+      required: true,
     },
     comment_text: {
       type: String,
@@ -18,6 +14,7 @@ const commentSchema = new mongoose.Schema(
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
   },
   { timestamps: true }

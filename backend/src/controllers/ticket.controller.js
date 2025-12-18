@@ -60,6 +60,13 @@ export const assignTicket = async (req, res) => {
   const { agentId } = req.body;
 
   try {
+
+    if(!agentId){
+      return res.status(400).json({
+        success: false,
+        message: "agentId is required"
+      });
+    }
     const agent = await User.findById(agentId);
     if (!agent || agent.role !== "agent") {
       return res.status(404).json({
@@ -68,6 +75,7 @@ export const assignTicket = async (req, res) => {
       });
     }
     
+    // const ticket  = await Ticket.findOne({ticket_id : ticketId})  not mongoDB _id
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
       return res.status(404).json({
@@ -111,8 +119,8 @@ export const updateTicket = async (req, res) => {
         message: "Invalid status",
       });
     }
-
-    const ticket = await Ticket.findById(ticketId);
+  
+    const ticket = await Ticket.findById(ticketId); //mongoDB _id
     if (!ticket) {
       return res.status(404).json({
         success: false,
@@ -220,7 +228,7 @@ export const getTicket = async (req, res) => {
   try {
     const { ticketId } = req.params;
 
-    const ticket = await Ticket.findById(ticketId)
+    const ticket = await Ticket.findById(ticketId) //mongoDB _id
       .populate("created_by", "name email")
       .populate("assigned_to", "name email");
 
